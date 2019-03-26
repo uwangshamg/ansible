@@ -6,22 +6,18 @@
   file:
     path: "{{ pkgroot }}"
     state: directory
-    owner: java-user
-    group: java-user
 
 - name: copy "{{ pkgname }}"
   copy:
     src: "{{ pkgsrc }}"
     dest: /tmp/
     mode: 0640
-    owner: java-user
-    group: java-user
 
 - name: Replace code
   shell: "cd {{ pkgroot }} && rm -rf * && tar xf /tmp/{{ pkgname }}"
-  become: yes
-  become_user: java-user
-  become_method: sudo
+
+- name: Chown
+  shell: "chown -R java-user.java-user {{ pkgroot }}"
 
 - name: Create backup dir
   file:
