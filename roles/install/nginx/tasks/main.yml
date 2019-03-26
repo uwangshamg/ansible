@@ -1,0 +1,48 @@
+- name: yum install pcre-devel openssl-devel
+  yum: name={{ item }} state=present
+  loop:
+    - pcre-devel
+    - openssl-devel
+    - gcc
+
+- name: 解压文件
+  unarchive:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    remote_src: "{{ item.remote_src }}"
+  loop:
+    - { src: 'http://nginx.org/download/{{ nginx_version }}.tar.gz', dest: '/usr/local/src', remote_src: 'yes' }
+    - { src: 'echo-v0.61.tar.gz', dest: '/usr/local/src', remote_src: 'no' }
+    - { src: 'vts-v0.1.18.tar.gz', dest: '/usr/local/src', remote_src: 'no' }
+
+
+- name: test /usr/local/nginx exits
+  shell: "test -d /usr/local/{{ nginx_version }}"
+  ignore_errors: yes
+  register: result
+
+- name: install nginx
+  shell: cd /usr/local/src/{{ nginx_version }} && \
+         ./configure --user=www --group=www --prefix=/usr/local/{{ nginx_version }} \
+         --add-module=/usr/local/src/echo-nginx-module-0.61 \
+         --add-module=/usr/local/src/nginx-module-vts-0.1.18 \
+         --with-http_stub_status_module \
+         --with-http_ssl_module \
+         --with-http_realip_module && \
+         make && make install
+  when: result.rc != 0
+
+- name: link nginx
+  file:
+    src: /usr/local/{{ nginx_version }}
+    dest: /usr/local/nginx
+    state: link
+
+- name: create nginx conf.d
+  file: path={{ item }} state=directory mode=0755
+  loop:
+    - /{{ conf_dir }}/conf.d
+    - /app/logs
+
+- name: copy nginx.vim
+  copy: src=nginx.vim dest=/root/.vim/syntax/

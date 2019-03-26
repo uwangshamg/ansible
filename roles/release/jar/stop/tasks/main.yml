@@ -1,0 +1,12 @@
+- name: Create start scripts
+  template:
+    src: main.sh
+    dest: /tmp/main.sh
+    owner: java-user
+    group: java-user
+
+- name: stop main.sh
+  shell: ". /etc/profile && /bin/bash /tmp/main.sh stop"
+  become: yes
+  become_user: java-user
+  become_method: sudo

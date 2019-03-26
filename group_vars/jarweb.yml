@@ -1,0 +1,3 @@
+---
+pkgname: "{{ pkgsrc.split('/')[-1] }}"
+pkgroot: "/data/app/{{ project }}/"

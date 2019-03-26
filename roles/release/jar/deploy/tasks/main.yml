@@ -1,0 +1,52 @@
+- name: register backup pkgname
+  shell: echo "`date +%F-%H-%M`_{{ pkgname }}"
+  register: backup_pkgname
+
+- name: create pkgroot
+  file:
+    path: "{{ pkgroot }}"
+    state: directory
+    owner: java-user
+    group: java-user
+
+- name: copy "{{ pkgname }}"
+  copy:
+    src: "{{ pkgsrc }}"
+    dest: "{{ pkgroot }}"
+    mode: 0640
+    owner: java-user
+    group: java-user
+
+- name: start rngd service
+  service: name=rngd state=started enabled=yes
+
+- name: Create start scripts
+  template:
+    src: main.sh
+    dest: /tmp/main.sh
+    owner: java-user
+    group: java-user
+
+- name: restart main.sh
+  shell: ". /etc/profile && /bin/bash /tmp/main.sh restart"
+  become: yes
+  become_user: java-user
+  become_method: sudo
+
+- name: Create backup dir
+  file:
+    path: "/opt/{{ project }}"
+    state: directory
+    owner: java-user
+    group: java-user
+
+- name: Backup pkg
+  copy:
+    src: "{{ pkgroot }}/{{ pkgname }}"
+    dest: "/opt/{{ project }}/{{ backup_pkgname.stdout }}"
+    owner: java-user
+    group: java-user
+    remote_src: yes
+  become: yes
+  become_user: java-user
+  become_method: sudo

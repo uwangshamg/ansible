@@ -1,0 +1,9 @@
+- name: copy sshd_config
+  copy: src=sshd_config dest=/etc/ssh/
+  notify: restart sshd
+
+- name: yum install
+  yum: name={{ item }} state=latest
+  loop:
+    - unzip
+    - bash-completion

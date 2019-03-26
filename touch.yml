@@ -1,0 +1,28 @@
+- hosts: web-test
+#  become: yes
+#  become_user: root
+#  become_method: sudo
+
+  tasks:
+    - name: create file test.txt
+      become_user: java-user
+      file:
+        path: /home/java-user/test.txt
+        state: touch
+        owner: java-user
+        group: java-user
+
+    - name: show port
+      debug: 'msg="{{ port }}"'
+
+    - name: show ansible_become_user
+      debug: 'msg="{{ ansible_become_user }}"'
+
+    - name: copy pagkace
+      copy:
+        src: /tmp/abc.war
+        dest: /home/java-user/abc.war
+      become_user: java-user
+
+    - name: show /etc/shadow
+      shell: "cat /etc/shadow"

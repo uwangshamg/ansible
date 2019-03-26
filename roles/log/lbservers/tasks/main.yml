@@ -1,0 +1,8 @@
+- name: register date
+  shell: "date +%F -d '-1 day'"
+  register: result
+  
+- name: rename log file
+  shell: "mv /data/app/logs/{{ projectName }}.log /opt/{{ projectName }}.log && /usr/local/nginx/sbin/nginx -s reload"
+  loop:
+    - { src: '/data/app/logs/{{ projectName }}.log', dest: '/opt/{{ projectName }}.log' }

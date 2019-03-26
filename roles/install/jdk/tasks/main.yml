@@ -1,0 +1,36 @@
+- name: unarchive jdk
+  unarchive:
+    src: "jdk"
+    dest: /usr/local/
+    creates: /usr/local/jdk
+
+- name: link jdk
+  file:
+    src: "/usr/local/jdk1.8.0_201"
+    dest: /usr/local/jdk
+    state: link
+
+- name: add profile
+  lineinfile:
+    path: /etc/profile
+    line: "{{ item }}"
+  loop:
+    - 'export JAVA_HOME=/usr/local/jdk'
+    - 'export PATH=$JAVA_HOME/bin:$JAVA_HOME/jre/bin:$PATH'
+    - 'export CLASSPATH=.$CLASSPATH:$JAVA_HOME/lib:$JAVA_HOME/jre/lib:$JAVA_HOME/lib/tools.jar'
+
+- name: yum install rngd
+  yum: name=rng-tools state=present
+ 
+- name: started rngd
+  service: name=rngd state=started enabled=yes
+
+- name: create /data/app
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: java-user
+    group: java-user
+  loop:
+    - '/data/app'
+    - '/data/log'

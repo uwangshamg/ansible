@@ -1,0 +1,2 @@
+nginx_version: nginx-1.15.8
+conf_dir: /usr/local/nginx/conf

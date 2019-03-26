@@ -1,0 +1,12 @@
+#!/bin/bash
+
+case "$1" in
+start)
+    /usr/lcoal/nginx/sbin/nginx ;; 
+stop)
+    /usr/local/nginx/sbin/nginx -s stop ;;
+reload) 
+    /usr/local/nginx/sbin/nginx -s reload ;;
+*) 
+    echo $"Usage: $prog {start|stop|reload}"; exit 1 ;;
+esac
