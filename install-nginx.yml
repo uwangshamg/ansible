@@ -1,3 +1,0 @@
-- hosts: web-test
-  roles:
-    - install/nginx

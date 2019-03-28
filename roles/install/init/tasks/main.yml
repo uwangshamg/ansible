@@ -1,9 +1,16 @@
-- name: copy sshd_config
-  copy: src=sshd_config dest=/etc/ssh/
-  notify: restart sshd
-
 - name: yum install
   yum: name={{ item }} state=latest
   loop:
     - unzip
-    - bash-completion
+
+- name: create dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: java-user
+    group: java-user
+  loop:
+    - "/data"
+    - "/data/app"
+    - "/data/log"
+    - "/data/run"
