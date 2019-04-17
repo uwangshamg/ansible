@@ -43,6 +43,13 @@
   loop:
     - /{{ conf_dir }}/conf.d
     - /app/logs
+    - /root/.vim/syntax
 
 - name: copy nginx.vim
   copy: src=nginx.vim dest=/root/.vim/syntax/
+
+- name: /usr/share/vim/vim74/filetype.vim nginx
+  lineinfile:
+    path: /usr/share/vim/vim80/filetype.vim
+    line: 'au BufRead,BufNewFile /usr/local/nginx/conf/conf.d/*.conf,/usr/local/nginx/conf/*.conf,*.conf,conf/*.conf set ft=nginx'
+

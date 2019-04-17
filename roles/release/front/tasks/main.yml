@@ -33,3 +33,6 @@
     owner: java-user
     group: java-user
     remote_src: yes
+
+- name: delete old backup
+  shell: "cd /opt/{{ project }} && ls -r *{{ pkgname }} | awk 'NR>10' |xargs rm -f"

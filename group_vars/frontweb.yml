@@ -1,3 +1,0 @@
----
-pkgname: "{{ project }}.tgz"
-pkgroot: "/data/app/{{ project }}/"
