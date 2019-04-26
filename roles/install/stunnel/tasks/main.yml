@@ -1,0 +1,24 @@
+- name: install stunnel
+  yum: name=stunnel state=latest
+
+- name: Create conf dir 
+  file:
+    path: /etc/stunnel
+    state: directory
+
+- name: copy redis-cli.conf
+  template:
+    src: redis-cli.conf
+    dest: /etc/stunnel/redis-cli.conf
+  notify:
+    - Stop stunnel
+    - Start stunnel
+
+- name: test -s /var/run/stunnel.pid
+  shell: "test -s /var/run/stunnel.pid"
+  register: result
+  ignore_errors: yes
+
+- name: Start stunnel
+  shell: "stunnel /etc/stunnel/redis-cli.conf"
+  when: result.rc != 0

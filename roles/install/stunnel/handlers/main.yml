@@ -1,0 +1,5 @@
+- name: Stop stunnel
+  shell: "pkill stunnel"
+
+- name: Start stunnel
+  shell: "stunnel /etc/stunnel/redis-cli.conf"

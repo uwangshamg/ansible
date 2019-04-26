@@ -5,12 +5,13 @@
 
 - name: 解压文件
   unarchive:
-    src: redis-3.2.11.tar.gz
+    src: "{{ version }}.tar.gz"
     dest: /usr/local/src/
   when: result.rc != 0
 
 - name: compile redis
-  shell: cd /usr/local/src/redis-3.2.11 && \
+  shell: cd /usr/local/src/{{ version }} && \
+         make && \
          make PREFIX=/usr/local/redis install && \
          cp utils/redis_init_script /etc/init.d/redis_6380
   when: result.rc != 0

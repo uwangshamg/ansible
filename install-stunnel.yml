@@ -1,7 +1,7 @@
-- hosts: yanqian
+- hosts:
+  - 172.22.1.61
   become: yes
   become_user: root
   become_method: sudo
   roles:
-    - install/jdk
-    - install/nginx
+    - install/stunnel
